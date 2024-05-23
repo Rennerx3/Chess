@@ -1,0 +1,33 @@
+.board{
+  display: grid;
+  grid-template-columns: repeat(8, 50px);
+  grid-template-rows: repeat(8, 50px);
+  justify-content: center;
+}
+
+.square{
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+}
+
+.piece {
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.p-white{ background-image: url(../public/p-w.png); }
+.n-white{ background-image: url(../public/h-w.png); }
+.b-white{ background-image: url(../public/a-w.png); }
+.r-white{ background-image: url(../public/r-w.png); }
+.q-white{ background-image: url(../public/q-w.png); }
+.k-white{ background-image: url(../public/k-w.png); }
+
+.p-black{ background-image: url(../public/p-b.png); }
+.n-black{ background-image: url(../public/h-b.png); }
+.b-black{ background-image: url(../public/a-b.png); }
+.r-black{ background-image: url(../public/r-b.png); }
+.q-black{ background-image: url(../public/q-b.png); }
+.k-black{ background-image: url(../public/k-b.png); }
