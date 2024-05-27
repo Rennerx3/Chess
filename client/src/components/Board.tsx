@@ -1,6 +1,9 @@
 import { Chess, Square as ChessSquare } from "chess.js";
 import Square from "./Square";
+import { io } from 'socket.io-client';
+import { useEffect } from "react";
 
+const socket = io('http://localhost:4000');
 
 interface BoardProps {
     game: Chess;
@@ -9,11 +12,29 @@ interface BoardProps {
 
 const Board = ({ game, setGame }: BoardProps) => {
 
+    useEffect( () => {
+        socket.on('movement', ({from, to}: {from: string, to: string}) => {
+
+            const move = game.move({ from, to });
+
+            if(move){
+                setGame( new Chess( game.fen() ) );
+            }
+
+        })
+
+        return () => {
+            socket.off('movement');
+        }
+    }, [game, setGame]);
+
+
     const handleMove = ( from: string, to: string ) => {
 
         const move = game.move({from, to});
 
         if(move){
+            socket.emit('movement', {from, to});
             setGame( new Chess(game.fen()) );
         }
 
