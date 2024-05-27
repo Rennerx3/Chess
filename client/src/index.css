@@ -14,8 +14,9 @@
 .piece {
   width: 40px;
   height: 40px;
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
+  background-position: center;
 }
 
 .p-white{ background-image: url(../public/p-w.png); }
