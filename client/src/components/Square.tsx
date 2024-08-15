@@ -46,5 +46,5 @@ const Square = ({ column, row, position, piece, onMove }: SquareProps) => {
         </div>
      );
 }
- 
+
 export default Square;
