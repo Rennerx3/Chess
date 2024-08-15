@@ -19,10 +19,7 @@ interface Gamer {
 const Board = ({ game, setGame }: BoardProps) => {
     const [players, setPlayers] = useState(1);
     const [gamers, setGamers] = useState<Gamer[]>([]);
-    const [player, setPlayer] = useState('');
-
-    console.log(gamers);
-    
+    const [player, setPlayer] = useState('');    
 
     useEffect(() => {
 
