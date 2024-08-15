@@ -48,9 +48,6 @@ io.on('connection', (socket) => {
             roomPlayers[roomId].push({userId: socket.id, color});
         }
 
-        console.log(roomPlayers);
-        
-
         io.to(roomId).emit('playerCount', numberOfClients);
         io.to(roomId).emit('namePlayers', {roomPlayers: roomPlayers[roomId]});
         socket.emit('player', socket.id);
