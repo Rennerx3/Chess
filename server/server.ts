@@ -11,20 +11,61 @@ const io = new SocketServer(server, {
     }
 });
 
+interface User {
+    userId: string;
+    color: string;
+}
+
 app.use(cors());
+
+const roomPlayers: {[key: string]: User[]} = {};
 
 io.on('connection', (socket) => {
 
-    console.log('Un cliente se ha conectado');
+    socket.on('joinGame', (roomId) => {
+        socket.join(roomId);
+        
+        const room = io.sockets.adapter.rooms.get(roomId);
+        const numberOfClients = room ? room.size : 0;
+
+        if(!roomPlayers[roomId]){
+            roomPlayers[roomId] = [];
+        }else{
+            if(roomPlayers[roomId].length === 2){
+                for(let key in roomPlayers){
+                    if(key !== roomId){
+                        roomPlayers[key] = [];
+                    }
+                }
+                roomPlayers[roomId] = [];
+            } 
+        }
+
+        const existingPlayer = roomPlayers[roomId].find(player => player.userId === socket.id);
+
+        if(!existingPlayer){
+            const color = roomPlayers[roomId].length === 0 ? 'b' : 'w';
+            roomPlayers[roomId].push({userId: socket.id, color});
+        }
+
+        console.log(roomPlayers);
+        
+
+        io.to(roomId).emit('playerCount', numberOfClients);
+        io.to(roomId).emit('namePlayers', {roomPlayers: roomPlayers[roomId]});
+        socket.emit('player', socket.id);
+        
+        socket.on('movement', ({from, to}) => {
+            io.to(roomId).emit('movement', {from, to});
+        });
+
+    });
     
 
-    socket.on('movement', ({from, to}) => {
-        io.emit('movement', {from, to});
-    });
+
 
     socket.on('disconnect', () => {
         console.log('Un cliente se ha desconectado');
-        
     });
 
 });
