@@ -52,8 +52,11 @@ io.on('connection', (socket) => {
         io.to(roomId).emit('namePlayers', {roomPlayers: roomPlayers[roomId]});
         socket.emit('player', socket.id);
         
-        socket.on('movement', ({from, to}) => {
-            io.to(roomId).emit('movement', {from, to});
+        socket.on('movement', ({from, to, movements}) => {
+            console.log(movements);
+            debugger;
+            
+            io.to(roomId).emit('movement', {from, to, movements});
         });
 
     });

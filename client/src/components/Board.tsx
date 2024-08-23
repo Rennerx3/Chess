@@ -19,7 +19,41 @@ interface Gamer {
 const Board = ({ game, setGame }: BoardProps) => {
     const [players, setPlayers] = useState(1);
     const [gamers, setGamers] = useState<Gamer[]>([]);
-    const [player, setPlayer] = useState('');    
+    const [player, setPlayer] = useState('');
+    const [validation, setValidation] = useState<boolean>();
+    const [movements, setMovements] = useState<number>(0);
+    const [gamersFlag, setGamersFlag] = useState<boolean>(false);
+
+    console.log(movements);
+    console.log(validation);
+    console.log(gamers);
+    console.log(player);
+
+
+
+
+    var turn = gamers.some(gamer => gamer.userId === player && gamer.color === 'w');
+
+    useEffect(() => {
+        setGamersFlag(true);
+    }, [gamers])
+
+
+    useEffect(() => {
+
+        if (movements === 0 && gamersFlag) {
+            let check = gamers.some(gamer => gamer.userId === player && gamer.color === 'w');
+
+            setValidation(check);
+            debugger;
+        } else if (movements > 0 && gamersFlag) {
+            setValidation(prevValidation => !prevValidation);
+            debugger;
+
+        }
+    }, [gamers, player, movements]);
+
+
 
     useEffect(() => {
 
@@ -40,17 +74,19 @@ const Board = ({ game, setGame }: BoardProps) => {
 
             socket.emit('joinGame', roomId);
 
+            debugger;
+
             socket.on('playerCount', (numberOfClients: number) => {
                 setPlayers(numberOfClients);
             })
 
-            socket.on('namePlayers', ({roomPlayers}: {roomPlayers: {userId: string, color: string}[]}) => {
-                
+            socket.on('namePlayers', ({ roomPlayers }: { roomPlayers: { userId: string, color: string }[] }) => {
+
                 setGamers((prevPlayers) => {
-                    
-                    if(prevPlayers.length === 0){
+
+                    if (prevPlayers.length === 0) {
                         roomPlayers.forEach((player) => {
-                            prevPlayers.push({userId: player.userId, color: player.color});
+                            prevPlayers.push({ userId: player.userId, color: player.color });
                         })
                     }
 
@@ -63,17 +99,19 @@ const Board = ({ game, setGame }: BoardProps) => {
                 setPlayer(player);
             })
 
-            socket.on('movement', ({ from, to }: { from: string, to: string }) => {
+            socket.on('movement', ({ from, to, movements }: { from: string, to: string, movements: number }) => {
 
                 const move = game.move({ from, to });
 
                 if (move) {
                     setGame(new Chess(game.fen()));
+                    setMovements(movements);
                 }
             })
 
-        }
 
+
+        }
 
         return () => {
             socket.off('movement');
@@ -88,16 +126,25 @@ const Board = ({ game, setGame }: BoardProps) => {
 
         if (gamers.some(gamer => gamer.color === game.turn() && gamer.userId === player)) {
 
+            let roomId;
+
+            const url = new URLSearchParams(window.location.search);
+
+            roomId = url.get('roomId');
+
             const move = game.move({ from, to });
 
             if (move) {
-                socket.emit('movement', { from, to });
+                
+                socket.emit('movement', { from, to, movements: movements + 1 });
                 setGame(new Chess(game.fen()));
             }
 
         }
 
     }
+
+
 
     const renderSquare = (i: number, rank: number) => {
 
@@ -131,7 +178,8 @@ const Board = ({ game, setGame }: BoardProps) => {
 
     return (
         <>
-            {players === 1 ? (<Link />) : (<div className="board">{renderBoard()}</div>)}
+            {players === 1 ? (<Link />) : (<div className="main"><div className="board">{renderBoard()}</div><div className="turn"><p>You are {turn ? 'White' : 'Black'} </p><p>{validation ? ' It´s your turn' : ' Turn of the opponent'}</p>
+            </div></div>)}
         </>
     )
 }
