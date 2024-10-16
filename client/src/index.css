@@ -1,23 +1,30 @@
 .main{
   display: flex;
-  justify-content: space-evenly;
+  flex-direction: row;
+  justify-content: center;
+  gap: 60px;
+}
+
+.turn-main{
+  height: 100vh;
+  width: 20%;
+  display: flex;
+  align-items: center;
 }
 
 .turn{
-  width: 20%;
+  padding-inline: 40px;
+  width: 100%;
   height: 10vh;
-  margin-top: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  transform: translate(-50%, -50%);
   background-color: #377CCD;
   border-radius: 5px;
   border: 2px solid #FF3D00;
   font-weight: bolder;
   color: white;
-
 }
 
 .board{

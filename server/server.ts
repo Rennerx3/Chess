@@ -60,6 +60,11 @@ io.on('connection', (socket) => {
             io.to(roomId).emit('resetGame');
         })
 
+        socket.on('checkMate', (gameOver: boolean) => {
+            console.log(`El cliente ${socket.id} ha checkeado mate`);
+            io.to(roomId).emit('checkMate', gameOver); 
+        });
+
         socket.on('disconnect', () => {
             console.log('Un cliente se ha desconectado');
     

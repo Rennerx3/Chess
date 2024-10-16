@@ -1,10 +1,4 @@
-interface PieceProps {
-    piece: {
-        type: string;
-        color: string;
-    }
-    onDragStart: (Event: React.DragEvent<HTMLDivElement>) => void;
-}
+import { PieceProps } from "../types/types";
 
 const Piece = ( { piece, onDragStart }: PieceProps ) => {
 
